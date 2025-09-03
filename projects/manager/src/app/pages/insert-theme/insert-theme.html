@@ -1,0 +1,221 @@
+<div class="min-h-screen bg-gray-100 flex flex-col justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div class="sm:mx-auto sm:w-full sm:max-w-2xl">
+    <h2 class="mt-6 text-center text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+      Cadastro de Tema Customizado
+    </h2>
+    <p class="mt-2 text-center text-sm text-gray-600">
+      Configure a identidade visual e as propriedades do sistema.
+    </p>
+  </div>
+
+  <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-2xl">
+    <div class="bg-white py-8 px-4 shadow-md border border-gray-100 sm:rounded-xl sm:px-10">
+      <!-- Usando Reactive Forms do Angular -->
+      <form [formGroup]="themeForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        <!-- SEÇÃO 1: Identificadores Básicos -->
+        <div class="border-b border-gray-200 pb-5">
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Informações Básicas</h3>
+          <div class="mt-4 grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
+            <div>
+              <label for="id" class="block text-sm font-medium text-gray-700"
+                >ID do Tema (Slug)</label
+              >
+              <div class="mt-1">
+                <input
+                  id="id"
+                  type="text"
+                  formControlName="id"
+                  placeholder="ex: tema-dark-premium"
+                  class="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="theme_name" class="block text-sm font-medium text-gray-700"
+                >Nome do Tema</label
+              >
+              <div class="mt-1">
+                <input
+                  id="theme_name"
+                  type="text"
+                  formControlName="theme_name"
+                  placeholder="ex: Premium Dark"
+                  class="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO 2: Textos de Interface -->
+        <div class="border-b border-gray-200 pb-5">
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Textos Exibidos (Labels)</h3>
+          <div class="mt-4 space-y-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label for="title" class="block text-sm font-medium text-gray-700"
+                  >Título Principal</label
+                >
+                <input
+                  id="title"
+                  type="text"
+                  formControlName="title"
+                  class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+                />
+              </div>
+              <div>
+                <label for="subtitle" class="block text-sm font-medium text-gray-700"
+                  >Subtítulo</label
+                >
+                <input
+                  id="subtitle"
+                  type="text"
+                  formControlName="subtitle"
+                  class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label for="modal_title" class="block text-sm font-medium text-gray-700"
+                >Título dos Modais</label
+              >
+              <input
+                id="modal_title"
+                type="text"
+                formControlName="modal_title"
+                class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              />
+            </div>
+
+            <div>
+              <label for="confirm_text" class="block text-sm font-medium text-gray-700"
+                >Texto de Confirmação</label
+              >
+              <textarea
+                id="confirm_text"
+                rows="3"
+                formControlName="confirm_text"
+                placeholder="Mensagem padrão para ações de confirmação..."
+                class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              ></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO 3: Mídias e URLs -->
+        <div class="border-b border-gray-200 pb-5">
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Imagens e Mídias (URLs)</h3>
+          <div class="mt-4 space-y-4">
+            <div>
+              <label for="cover_url" class="block text-sm font-medium text-gray-700"
+                >URL da Capa (Cover)</label
+              >
+              <input
+                id="cover_url"
+                type="url"
+                formControlName="cover_url"
+                placeholder="https://exemplo.com/capa.jpg"
+                class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+              />
+            </div>
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <div>
+                <label for="bg_image_url" class="block text-sm font-medium text-gray-700"
+                  >URL do Background Geral</label
+                >
+                <input
+                  id="bg_image_url"
+                  type="url"
+                  formControlName="bg_image_url"
+                  class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+                />
+              </div>
+              <div>
+                <label for="bg_prof_image_url" class="block text-sm font-medium text-gray-700"
+                  >URL do Background do Perfil</label
+                >
+                <input
+                  id="bg_prof_image_url"
+                  type="url"
+                  formControlName="bg_prof_image_url"
+                  class="mt-1 block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEÇÃO 4: Configurações de Esquema JSON (Campos JSONB) -->
+        <div>
+          <h3 class="text-lg font-medium leading-6 text-gray-900">Esquema de Cores (JSON)</h3>
+          <p class="text-xs text-gray-500 mb-4">
+            Insira as propriedades de estilização estruturadas em formato JSON.
+          </p>
+
+          <div class="grid grid-cols-1 gap-4 sm:grid-cols-2">
+            <div>
+              <label for="light_theme" class="block text-sm font-medium text-gray-700"
+                >Configuração Light Mode</label
+              >
+              <textarea
+                id="light_theme"
+                rows="6"
+                formControlName="light_theme"
+                placeholder='{ "primary": "#3b82f6", "bg": "#ffffff" }'
+                class="font-mono mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm text-xs"
+              ></textarea>
+              @if (
+                themeForm.get('light_theme')?.touched &&
+                themeForm.get('light_theme')?.errors?.['jsonInvalido']
+              ) {
+                <span class="text-xs text-red-500 mt-1 block"
+                  >JSON inválido. Verifique a sintaxe.</span
+                >
+              }
+            </div>
+
+            <div>
+              <label for="dark_theme" class="block text-sm font-medium text-gray-700"
+                >Configuração Dark Mode</label
+              >
+              <textarea
+                id="dark_theme"
+                rows="6"
+                formControlName="dark_theme"
+                placeholder='{ "primary": "#1d4ed8", "bg": "#1f2937" }'
+                class="font-mono mt-1 block w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm text-xs"
+              ></textarea>
+              @if (
+                themeForm.get('dark_theme')?.touched &&
+                themeForm.get('dark_theme')?.errors?.['jsonInvalido']
+              ) {
+                <span class="text-xs text-red-500 mt-1 block"
+                  >JSON inválido. Verifique a sintaxe.</span
+                >
+              }
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex justify-end space-x-3 pt-4">
+          <button
+            type="button"
+            class="bg-white py-2.5 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
+          >
+            Cancelar
+          </button>
+          <button
+            type="submit"
+            [disabled]="themeForm.invalid"
+            class="inline-flex justify-center py-2.5 px-4 border border-transparent shadow-sm text-sm font-semibold rounded-lg text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all disabled:opacity-50 disabled:cursor-not-allowed active:scale-[0.98]"
+          >
+            Salvar Tema
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

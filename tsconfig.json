@@ -64,6 +64,12 @@
     },
     {
       "path": "./projects/landing-page/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/manager/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/manager/tsconfig.spec.json"
     }
   ]
 }

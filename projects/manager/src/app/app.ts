@@ -9,5 +9,5 @@ import { FooterBarComponent, TopbarBarComponent } from 'invite-ui';
   styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('invite-editor');
+  protected readonly title = signal('manager');
 }
