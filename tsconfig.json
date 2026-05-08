@@ -1,0 +1,69 @@
+/* To learn more about Typescript configuration file: https://www.typescriptlang.org/docs/handbook/tsconfig-json.html. */
+/* To learn more about Angular compiler options: https://angular.dev/reference/configs/angular-compiler-options. */
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "strict": true,
+    "noImplicitOverride": true,
+    "noPropertyAccessFromIndexSignature": true,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "experimentalDecorators": true,
+    "paths": {
+      "invite-environments": ["./dist/invite-environments"],
+      "invite-ui": ["./dist/invite-ui"],
+      "models-core": ["./dist/models-core"],
+      "service-core": ["./dist/service-core"]
+    },
+    "importHelpers": true,
+    "target": "ES2022",
+    "module": "preserve"
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/invite-editor/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/invite-editor/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/service-core/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/service-core/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/models-core/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/models-core/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/invite-page/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/invite-page/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/invite-ui/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/invite-ui/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/landing-page/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/landing-page/tsconfig.spec.json"
+    }
+  ]
+}

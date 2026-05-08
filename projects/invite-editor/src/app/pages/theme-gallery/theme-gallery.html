@@ -1,0 +1,43 @@
+<div class="min-h-screen bg-slate-100 flex flex-col">
+  <!-- CONTENT -->
+  <main class="flex-1 p-6">
+    <div class="max-w-6xl mx-auto">
+      <h1 class="text-3xl font-black text-slate-800 mb-2">Escolha um Modelo</h1>
+      <p class="text-slate-500 mb-8">Selecione o tema perfeito para o convite.</p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        @for (theme of themes(); track theme.id) {
+          <a
+            [routerLink]="['/edit', theme.id]"
+            [queryParams]="{ mode: 'new' }"
+            class="rounded-2xl overflow-hidden shadow-xl bg-white hover:scale-[1.02] transition border border-slate-200"
+          >
+            <div class="h-44 relative">
+              <img [src]="theme.cover" class="w-full h-full object-cover" alt="Preview" />
+
+              <div class="absolute inset-0 bg-black/20"></div>
+
+              <div class="absolute bottom-3 left-3 text-white font-black text-lg drop-shadow-lg">
+                {{ theme.themeName }}
+              </div>
+            </div>
+            <!---
+            <div class="p-4 flex items-center justify-between">
+              <span class="text-xs font-bold text-slate-500 uppercase">
+                {{ theme.title }}
+              </span>
+
+              <div class="flex gap-2">
+                <span class="w-4 h-4 rounded-full" [style.background]="theme.primaryColor"></span>
+                <span class="w-4 h-4 rounded-full" [style.background]="theme.secondaryColor"></span>
+                <span class="w-4 h-4 rounded-full" [style.background]="theme.accentColor"></span>
+              </div>
+            </div>
+            ---->
+          </a>
+        }
+      </div>
+    </div>
+  </main>
+  <lib-whats-button-component phone="5516991376210" />
+</div>

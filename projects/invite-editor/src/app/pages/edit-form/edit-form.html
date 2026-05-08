@@ -1,0 +1,259 @@
+<div class="min-h-screen bg-slate-50 flex flex-col">
+  <!-- CONTENT -->
+  <main class="flex-1 p-4 md:p-8">
+    <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <div class="bg-white rounded-2xl shadow-sm p-6 border border-slate-200">
+        <h2 class="text-2xl font-bold text-slate-800 mb-6">Vamos Editar Seu Convite</h2>
+        @if (mode() == 'new') {
+          <div class="flex mt-4">
+            <a
+              [routerLink]="['/gallery']"
+              class="ml-auto text-sm font-semibold text-blue-600 cursor-pointer"
+              >Trocar tema</a
+            >
+          </div>
+        }
+
+        <form class="space-y-4" [formGroup]="inviteForm" (ngSubmit)="save()">
+          <div class="flex flex-col">
+            <label class="text-sm font-semibold text-slate-600">Nome do Aniversariante:</label>
+            <input
+              type="text"
+              placeholder="Ex: Arthur Henrique"
+              formControlName="name"
+              class="mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="flex flex-col">
+              <label class="text-sm font-semibold text-slate-600">Idade:</label>
+              <input
+                type="number"
+                formControlName="age"
+                placeholder="Ex: 7"
+                class="mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+            </div>
+
+            <div class="flex flex-col">
+              <label class="text-sm font-semibold text-slate-600">Data e Horário do evento:</label>
+              <input
+                type="datetime-local"
+                formControlName="date"
+                [min]="minDate"
+                class="mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all"
+                [class.border-red-500]="
+                  inviteForm.get('date')?.invalid && inviteForm.get('date')?.touched
+                "
+              />
+            </div>
+          </div>
+
+          <div class="flex flex-col animate-in fade-in slide-in-from-top-2 gap-2">
+            <label class="text-sm font-semibold text-slate-600">Foto do Convite</label>
+
+            @if (isEditingPhoto) {
+              <div
+                class="p-4 border border-blue-500 rounded-xl bg-slate-50 flex flex-col items-center gap-3"
+              >
+                <image-cropper
+                  [imageChangedEvent]="imageChangedEvent"
+                  [maintainAspectRatio]="true"
+                  [aspectRatio]="1 / 1"
+                  [roundCropper]="true"
+                  (imageCropped)="imageCropped($event)"
+                  class="max-w-full rounded-lg overflow-hidden shadow-sm"
+                ></image-cropper>
+
+                <div class="flex gap-2 w-full">
+                  <button
+                    type="button"
+                    (click)="savePhoto()"
+                    class="flex-1 bg-blue-500 text-white p-2 rounded-xl font-bold hover:bg-blue-600 shadow-lg shadow-blue-200 transition-all"
+                  >
+                    Confirmar
+                  </button>
+                  <button
+                    type="button"
+                    (click)="cancelEditing()"
+                    class="px-4 py-2 border border-slate-300 text-slate-600 rounded-xl hover:bg-slate-100 transition-all"
+                  >
+                    Cancelar
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <div class="flex items-center gap-4">
+                <div
+                  (click)="fileInput.click()"
+                  class="relative group w-20 h-20 rounded-full border-2 border-dashed border-slate-300 bg-slate-50 flex items-center justify-center overflow-hidden cursor-pointer hover:border-blue-400 transition-all shadow-inner"
+                >
+                  @if (inviteForm.get('profileUrl')?.value) {
+                    <img [src]="croppedPreview" class="w-full h-full object-cover" />
+                    <div
+                      class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <span class="text-[10px] text-white font-bold uppercase">Trocar</span>
+                    </div>
+                  } @else {
+                    <span class="text-slate-400 text-2xl">+</span>
+                  }
+                </div>
+
+                <div class="flex flex-col">
+                  <span class="text-sm font-medium text-slate-700">
+                    {{ inviteForm.get('profileUrl')?.value ? 'Foto selecionada' : 'Nenhuma foto' }}
+                  </span>
+                  <button
+                    type="button"
+                    (click)="fileInput.click()"
+                    class="text-xs text-blue-500 font-bold hover:underline text-left"
+                  >
+                    {{
+                      inviteForm.get('profileUrl')?.value ? 'Alterar imagem' : 'Clique para enviar'
+                    }}
+                  </button>
+                  @if (inviteForm.get('profileUrl')?.value) {
+                    <button
+                      type="button"
+                      (click)="removePhoto($event)"
+                      class="text-xs text-red-500 font-bold hover:underline text-left"
+                    >
+                      Remover imagem
+                    </button>
+                  }
+                </div>
+              </div>
+            }
+
+            <input
+              #fileInput
+              type="file"
+              (change)="fileChangeEvent($event)"
+              accept="image/*"
+              class="hidden"
+            />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-sm font-semibold text-slate-600">Endereço Completo:</label>
+            <input
+              type="text"
+              formControlName="address"
+              placeholder="📍 Av. Paulista, Nº 100, Bairro"
+              class="mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+            />
+          </div>
+
+          <div class="flex flex-col">
+            <label class="text-sm font-semibold text-blue-600"
+              >Link localização(Google Maps):</label
+            >
+            <input
+              type="text"
+              formControlName="mapUrl"
+              placeholder="https://maps......"
+              class="mt-1 p-2 border border-blue-200 rounded-lg outline-none"
+            />
+          </div>
+
+          <div class="flex flex-col animate-in fade-in slide-in-from-top-2">
+            <label class="text-sm font-semibold text-slate-600">Recados:</label>
+            <div class="flex gap-1">
+              <input
+                #descInput
+                type="text"
+                (keydown.enter)="$event.preventDefault(); addToListDescriptions(descInput)"
+                placeholder="EX: Levar roupa de piscina"
+                class="flex-1 mt-1 p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+              />
+              <button
+                type="button"
+                (click)="addToListDescriptions(descInput)"
+                class="bg-blue-500 text-white p-2 rounded-xl font-bold hover:bg-blue-600 shadow-lg shadow-blue-200 transition-all"
+              >
+                Adicionar
+              </button>
+            </div>
+            <ul
+              class="flex flex-col gap-1.5 mt-3 p-4 rounded-xl text-sm font-semibold text-slate-600 bg-blue-50"
+            >
+              @for (item of inviteForm.get('description')?.value; track $index) {
+                <li class="flex justify-between items-center">
+                  <span class="text-[14px]">➡️ {{ item }}</span>
+                  <button
+                    type="button"
+                    (click)="removeFromListDescriptions($index)"
+                    class="text-red-400 hover:text-red-600 text-[10px] uppercase"
+                  >
+                    remover
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+
+          <label class="text-sm font-semibold text-slate-600">Tema:</label>
+          <div class="flex gap-3 mb-6">
+            <button
+              type="button"
+              (click)="inviteForm.get('darkMode')?.setValue(false)"
+              class="px-4 py-2 rounded-xl font-semibold text-sm border transition-all"
+              [ngClass]="{
+                'border-red-500': inviteForm.get('darkMode')?.value === false,
+                'border-slate-300': inviteForm.get('darkMode')?.value !== false,
+              }"
+            >
+              Claro
+            </button>
+
+            <button
+              type="button"
+              (click)="inviteForm.get('darkMode')?.setValue(true)"
+              class="px-4 py-2 rounded-xl font-semibold text-sm border transition-all"
+              [ngClass]="{
+                'border-red-500': inviteForm.get('darkMode')?.value === true,
+                'border-slate-300': inviteForm.get('darkMode')?.value !== true,
+              }"
+            >
+              Escuro
+            </button>
+          </div>
+
+          <div class="flex flex-col gap-3 border-slate-100">
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" formControlName="showAge" class="w-4 h-4 text-blue-600" />
+              <span class="text-sm font-medium text-slate-700">Exibir idade</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input type="checkbox" formControlName="enableTimer" class="w-4 h-4 text-blue-600" />
+              <span class="text-sm font-medium text-slate-700">Adicionar contagem regressiva</span>
+            </label>
+            <label class="flex items-center gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                formControlName="confirmEnable"
+                class="w-4 h-4 text-blue-600"
+              />
+              <span class="text-sm font-medium text-slate-700">Ativar confirmação de presença</span>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            [disabled]="!inviteForm.valid"
+            class="w-full bg-blue-600 text-white py-4 mt-3 rounded-xl font-bold text-lg hover:bg-blue-700 shadow-lg disabled:opacity-50 transition-all"
+          >
+            {{ btnFinalyText() }}
+          </button>
+        </form>
+      </div>
+
+      <!-- PREVIEW REAL -->
+      <div class="sticky top-6">
+        <app-invite-label [received]="invitePreview()" [previewMode]="true" />
+      </div>
+    </div>
+  </main>
+</div>

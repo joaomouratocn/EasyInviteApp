@@ -1,0 +1,192 @@
+@if (data.value()) {
+  <div
+    [style.--bg]="schema()?.bg"
+    [style.--text]="schema()?.text"
+    [style.--card]="schema()?.card"
+    [style.--card-border]="schema()?.cardBorder"
+    [style.--primary]="schema()?.primaryColor"
+    [style.--secondary]="schema()?.secondaryColor"
+    [style.--accent]="schema()?.accentColor"
+    [style.--info-bg]="schema()?.infoBg"
+    [style.--info-border]="schema()?.infoBorder"
+    [style.--modal-bg]="schema()?.modalBg"
+    [style.--border-radius]="schema()?.borderRadius"
+    [style.--input-bg]="schema()?.inputBg"
+    [style.--input-placeholder]="schema()?.inputPlaceholder"
+    [style.background]="'url(' + this.theme.value()?.bgimage + ') center / cover no-repeat'"
+    class="min-h-screen flex justify-center items-start p-4"
+  >
+    <div
+      class="w-full max-w-112.5 min-h-screen bg-(--card) shadow-2xl relative overflow-hidden border border-(--card-border) rounded-(--border-radius)"
+    >
+      <div
+        class="h-72 flex items-center justify-center p-6 text-center font-bold italic relative overflow-hidden"
+        [style.background]="'url(' + this.theme.value()?.bgProfImage + ') center / cover no-repeat'"
+      >
+        <!-- escurece um pouco para dar contraste no texto -->
+        <div class="absolute inset-0 bg-black/30"></div>
+
+        <!-- fade para suavizar embaixo -->
+        <div
+          class="absolute bottom-0 left-0 w-full h-28 bg-linear-to-b from-transparent to-(--card)"
+        ></div>
+
+        <h1
+          class="relative z-20 text-4xl font-black uppercase tracking-tight text-white leading-none"
+          style="
+            text-shadow:
+              3px 3px 0 rgba(0, 0, 0, 0.65),
+              6px 6px 0 rgba(0, 0, 0, 0.25);
+          "
+        >
+          {{ this.theme.value()?.title }}
+        </h1>
+      </div>
+
+      @if (data.value()?.profileUrl) {
+        <div class="flex justify-center -mt-16 relative z-30">
+          <img
+            [src]="data.value()?.profileUrl"
+            class="w-32 h-32 rounded-full border-4 border-(--primary) shadow-xl object-cover"
+          />
+        </div>
+      }
+      <main class="p-8 text-center space-y-6">
+        <section>
+          <h2 class="text-4xl font-black uppercase text-(--text) italic tracking-tighter">
+            {{ data.value()?.name }}
+          </h2>
+          @if (data.value()?.showAge) {
+            <p class="text-2xl font-bold text-(--primary)">{{ data.value()?.age }} Anos!</p>
+          }
+        </section>
+
+        <p class="italic text-slate-500 font-medium">"{{ this.theme.value()?.subtitle }}"</p>
+
+        <div
+          class="grid gap-4 p-6 rounded-2xl border transition-all bg-(--info-bg) border-(--info-border)"
+        >
+          <div>
+            <span class="text-(--primary) text-xs font-black uppercase tracking-widest"
+              >Data & Hora</span
+            >
+            <p class="font-bold text-(--text) text-lg">
+              {{ data.value()?.date | date: "dd 'de' MMMM 'às' HH:mm" : '' : 'pt-BR' }}
+            </p>
+          </div>
+
+          <div class="border-t border-(--info-border) pt-4">
+            <span class="text-(--primary) text-xs font-black uppercase tracking-widest"
+              >Localização</span
+            >
+            <p class="text-sm text-(--text) font-semibold leading-tight mt-1">
+              {{ data.value()?.address }}
+            </p>
+
+            <a
+              [attr.href]="previewMode() ? null : data.value()?.mapUrl"
+              target="_blank"
+              [class.disabled-link]="previewMode()"
+              class="mt-5 inline-block px-8 py-3 cursor-pointer rounded-xl text-sm font-black uppercase tracking-widest shadow-lg hover:brightness-110 active:scale-95 transition-all bg-(--secondary) text-white"
+            >
+              📍 Ver no Mapa
+            </a>
+          </div>
+        </div>
+
+        @if (data.value()?.description?.length) {
+          <div class="text-left space-y-4 p-4 rounded-xl bg-(--info-bg)">
+            <h3 class="text-xs font-black uppercase text-(--primary) tracking-widest">
+              Recadinhos
+            </h3>
+            <ul class="space-y-2">
+              @for (item of data.value()?.description; track $index) {
+                <li class="flex items-start gap-2 text-sm text-(--text)">
+                  <span class="text-(--secondary)">★</span>
+                  {{ item }}
+                </li>
+              }
+            </ul>
+          </div>
+        }
+
+        @if (data.value()?.enableTimer) {
+          <div class="grid grid-cols-3 gap-2 text-center py-4 border-y border-(--card-border)">
+            <div class="flex flex-col">
+              <span class="text-2xl font-black text-(--primary)">{{ timeLeft().days }}</span>
+              <span class="text-[10px] uppercase font-bold text-slate-500">Dias</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-2xl font-black text-(--primary)">{{ timeLeft().hours }}</span>
+              <span class="text-[10px] uppercase font-bold text-slate-500">Horas</span>
+            </div>
+            <div class="flex flex-col">
+              <span class="text-2xl font-black text-(--primary)">{{ timeLeft().min }}</span>
+              <span class="text-[10px] uppercase font-bold text-slate-500">Min</span>
+            </div>
+          </div>
+        }
+
+        @if (data.value()?.confirmEnable) {
+          <form #confirmForm="ngForm" (ngSubmit)="confirmPresence(confirmForm)">
+            <div class="relative">
+              <input
+                name="fullName"
+                ngModel
+                required
+                type="text"
+                placeholder="Seu nome completo"
+                class="w-full px-5 py-4 rounded-2xl border-2 outline-none transition-all text-(--text) bg-(--input-bg) border-(--card-border) focus:border-(--secondary)"
+              />
+            </div>
+
+            <!-- mensagem required -->
+            @if (confirmForm.submitted && confirmForm.invalid) {
+              <p class="text-xs font-bold text-red-500 mt-2">
+                ⚠️ Digite seu nome completo para confirmar.
+              </p>
+            }
+
+            <button
+              type="submit"
+              [disabled]="previewMode()"
+              class="mt-4 w-full py-4 rounded-2xl font-black uppercase tracking-widest text-white shadow-xl transition-all active:scale-95 hover:brightness-110"
+              [style.backgroundColor]="'var(--secondary)'"
+            >
+              Confirmar Presença
+            </button>
+
+            <p class="text-[10px] text-slate-400 font-medium uppercase tracking-tighter mt-2">
+              Sua presença é muito importante para nós!
+            </p>
+          </form>
+        }
+        @if (confirmModalOpen()) {
+          <div
+            class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-(black/60) backdrop-blur-sm"
+          >
+            <div
+              class="bg-(--modal-bg) w-full max-w-sm p-6 rounded-(--border-radius) shadow-2xl border border-(--card-border)"
+            >
+              <h3 class="text-xl font-bold text-(--text) mb-4 text-center">
+                {{ theme.value()?.confirmText }}
+              </h3>
+              <button
+                type="button"
+                (click)="closeConfirmModal()"
+                class="flex-1 p-3 font-bold text-white rounded-2xl"
+                [style.backgroundColor]="'var(--secondary)'"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        }
+      </main>
+    </div>
+  </div>
+} @else {
+  <div class="min-h-screen flex items-center justify-center bg-slate-100">
+    <p class="animate-pulse font-bold text-slate-400">Carregando convite...</p>
+  </div>
+}

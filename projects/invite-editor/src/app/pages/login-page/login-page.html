@@ -1,0 +1,131 @@
+<div class="bg-slte-50 justify-center py-7 px-4 sm:px-6 lg:px-8">
+  <!-- Shadow e bordas adaptáveis -->
+  <div
+    class="bg-white py-8 px-8 shadow-md border border-gray-100 sm:rounded-xl sm:max-w-md mx-auto"
+  >
+    <div class="mx-auto">
+      <h2 class="text-center text-2xl sm:text-3xl font-extrabold text-gray-900">Entrar</h2>
+      <form class="space-y-5" action="#" method="POST">
+        <!-- E-mail -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-gray-700"> E-mail </label>
+          <div class="mt-1">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autocomplete="email"
+              required
+              class="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm"
+              placeholder="exemplo@email.com"
+            />
+          </div>
+        </div>
+
+        <!-- Senha -->
+        <div>
+          <label for="password" class="block text-sm font-medium text-gray-700"> Senha </label>
+          <div class="mt-1 relative group">
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              name="password"
+              required
+              class="appearance-none block w-full px-3 py-2.5 border border-gray-300 rounded-lg shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all sm:text-sm pr-10"
+            />
+
+            <button
+              type="button"
+              (click)="togglePassword()"
+              class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-blue-600 transition-colors"
+            >
+              @if (!showPassword) {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              } @else {
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.024 10.024 0 014.132-5.403m1.418-1.423A4.965 4.965 0 0112 7c1.32 0 2.533.515 3.434 1.352M12 12a3 3 0 01-3-3m3 3a3 3 0 003 3m0 0l3 3m-3-3l-3-3m-9-9l18 18"
+                  />
+                </svg>
+              }
+            </button>
+          </div>
+          <div class="flex justify-end mt-2">
+            <a
+              [routerLink]="['/forgot']"
+              class="text-xs sm:text-sm font-medium text-blue-600 hover:text-blue-500 transition-colors"
+            >
+              Esqueceu a senha?
+            </a>
+          </div>
+        </div>
+
+        <!-- Botão Acessar -->
+        <div>
+          <button
+            type="submit"
+            class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all active:scale-[0.98]"
+          >
+            Acessar
+          </button>
+        </div>
+
+        <!-- Footer do Form -->
+        <div class="flex items-center justify-center gap-2 text-sm">
+          <p class="text-gray-600">Não tem uma conta?</p>
+          <a
+            [routerLink]="['/register']"
+            class="font-semibold text-blue-600 hover:text-blue-500 transition-colors"
+          >
+            Crie agora
+          </a>
+        </div>
+      </form>
+
+      <!-- Divisor -->
+      <div class="mt-8">
+        <div class="relative">
+          <div class="absolute inset-0 flex items-center">
+            <div class="w-full border-t border-gray-200"></div>
+          </div>
+          <div class="relative flex justify-center text-sm">
+            <span class="px-2 bg-white text-gray-500 uppercase tracking-wider text-xs"
+              >Ou continue com</span
+            >
+          </div>
+        </div>
+
+        <!-- Google Login -->
+        <div id="google-button" class="w-full flex justify-center mt-6"></div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,308 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "cli": {
+    "packageManager": "npm"
+  },
+  "newProjectRoot": "projects",
+  "projects": {
+    "invite-editor": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/invite-editor",
+      "sourceRoot": "projects/invite-editor/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/invite-editor/src/main.ts",
+            "tsConfig": "projects/invite-editor/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/landing-page/public",
+                "output": "assets/project"
+              },
+              {
+                "glob": "**/*",
+                "input": "shared-assets",
+                "output": "assets/shared"
+              }
+            ],
+            "styles": [
+              "projects/invite-editor/src/material-theme.scss",
+              "projects/invite-editor/src/styles.css"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "invite-editor:build:production"
+            },
+            "development": {
+              "buildTarget": "invite-editor:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        }
+      }
+    },
+    "service-core": {
+      "projectType": "library",
+      "root": "projects/service-core",
+      "sourceRoot": "projects/service-core/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/service-core/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/service-core/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/service-core/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "models-core": {
+      "projectType": "library",
+      "root": "projects/models-core",
+      "sourceRoot": "projects/models-core/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/models-core/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/models-core/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/models-core/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "invite-page": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/invite-page",
+      "sourceRoot": "projects/invite-page/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/invite-page/src/main.ts",
+            "tsConfig": "projects/invite-page/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/landing-page/public",
+                "output": "assets/project"
+              },
+              {
+                "glob": "**/*",
+                "input": "shared-assets",
+                "output": "assets/shared"
+              }
+            ],
+            "styles": ["projects/invite-page/src/styles.css"],
+            "server": "projects/invite-page/src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "projects/invite-page/src/server.ts"
+            }
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "invite-page:build:production"
+            },
+            "development": {
+              "buildTarget": "invite-page:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        }
+      }
+    },
+    "invite-ui": {
+      "projectType": "library",
+      "root": "projects/invite-ui",
+      "sourceRoot": "projects/invite-ui/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:ng-packagr",
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/invite-ui/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/invite-ui/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/invite-ui/tsconfig.spec.json"
+          }
+        }
+      }
+    },
+    "landing-page": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "projects/landing-page",
+      "sourceRoot": "projects/landing-page/src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular/build:application",
+          "options": {
+            "browser": "projects/landing-page/src/main.ts",
+            "tsConfig": "projects/landing-page/tsconfig.app.json",
+            "assets": [
+              {
+                "glob": "**/*",
+                "input": "projects/landing-page/public",
+                "output": "assets/project"
+              },
+              {
+                "glob": "**/*",
+                "input": "shared-assets",
+                "output": "assets/shared"
+              }
+            ],
+            "styles": ["projects/landing-page/src/styles.css"],
+            "server": "projects/landing-page/src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": []
+            },
+            "ssr": {
+              "entry": "projects/landing-page/src/server.ts"
+            }
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kB",
+                  "maximumError": "1MB"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "4kB",
+                  "maximumError": "8kB"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular/build:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "landing-page:build:production"
+            },
+            "development": {
+              "buildTarget": "landing-page:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test"
+        }
+      }
+    }
+  }
+}
