@@ -18,7 +18,7 @@ export class LandingPage {
   private isBrowser = isPlatformBrowser(this.platformId);
   private inviteService = inject(InviteService);
   displayCount = signal(0);
-  price = signal(0);
+  price = signal('23,90');
   slogan = 'Convites fácil e rápido';
   dtEnvent = new Date().toLocaleDateString('pt-BR', {
     day: '2-digit',
@@ -29,13 +29,8 @@ export class LandingPage {
     stream: () => this.inviteService.getFaqs(),
   });
 
-  totalInvites = rxResource({
-    stream: () => this.inviteService.getInvites(),
-    defaultValue: [],
-  });
-
-  receivedPrice = rxResource({
-    stream: () => this.inviteService.getPrice(),
+  inviteAmount = rxResource({
+    stream: () => this.inviteService.getInviteAmount(),
     defaultValue: 0,
   });
 
@@ -48,29 +43,30 @@ export class LandingPage {
   constructor() {
     this.setSeo();
     effect(() => {
-      this.price.set(this.receivedPrice.value());
-      const target = this.totalInvites.value();
-      if (this.isBrowser && target.length > 0) {
-        this.animateCounter(target.length);
-      }
+      this.price.set(this.price());
+      this.animateCounter(this.inviteAmount.value());
     });
   }
 
   private animateCounter(target: number) {
-    const duration = 1600;
-    const start = performance.now();
+    if (isPlatformBrowser(this.platformId)) {
+      requestAnimationFrame(() => {
+        const duration = 1600;
+        const start = performance.now();
 
-    const tick = (now: number) => {
-      const progress = Math.min((now - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
+        const tick = (now: number) => {
+          const progress = Math.min((now - start) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
 
-      this.displayCount.set(Math.floor(eased * target));
+          this.displayCount.set(Math.floor(eased * target));
 
-      if (progress < 1) {
+          if (progress < 1) {
+            requestAnimationFrame(tick);
+          }
+        };
         requestAnimationFrame(tick);
-      }
-    };
-    requestAnimationFrame(tick);
+      });
+    }
   }
 
   goToCreateInvite() {

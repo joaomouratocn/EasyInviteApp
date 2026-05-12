@@ -8,7 +8,7 @@ import { InviteModel, Theme, Faq } from 'models-core';
 })
 export class InviteService {
   private http = inject(HttpClient);
-  private readonly API_URL = 'http://localhost:3000';
+  private readonly API_URL = '/api';
 
   saveInvite(invitation: InviteModel): Observable<true> {
     return of(true);
@@ -27,11 +27,15 @@ export class InviteService {
   }
 
   getFaqs(): Observable<Faq[]> {
-    return this.http.get<Faq[]>(`${this.API_URL}/faqs`);
+    return this.http.get<Faq[]>(`${this.API_URL}/faqs/getall`);
   }
 
   getInvites(): Observable<InviteModel[]> {
     return this.http.get<InviteModel[]>(`${this.API_URL}/invites`);
+  }
+
+  getInviteAmount(): Observable<number> {
+    return this.http.get<number>(`${this.API_URL}/invite/count`);
   }
 
   getPrice(): Observable<number> {
