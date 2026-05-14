@@ -18,11 +18,14 @@ export class LandingPage {
   private isBrowser = isPlatformBrowser(this.platformId);
   private inviteService = inject(InviteService);
   displayCount = signal(0);
-  price = signal('23,90');
   slogan = 'Convites fácil e rápido';
   dtEnvent = new Date().toLocaleDateString('pt-BR', {
     day: '2-digit',
     month: 'long',
+  });
+
+  priceReceived = rxResource({
+    stream: () => this.inviteService.getPrice(),
   });
 
   faq = rxResource({
@@ -43,8 +46,9 @@ export class LandingPage {
   constructor() {
     this.setSeo();
     effect(() => {
-      this.price.set(this.price());
-      this.animateCounter(this.inviteAmount.value());
+      if (this.isBrowser) {
+        this.animateCounter(this.inviteAmount.value());
+      }
     });
   }
 
@@ -78,8 +82,8 @@ export class LandingPage {
   }
 
   private setSeo() {
-    const pageTitle = `Convite Fácil | Convites digitais rápidos por R$ ${this.price()}`;
-    const description = `Crie convites digitais modernos em minutos. Tema pronto, link compartilhável, confirmação de presença e contagem regressiva. Apenas R$ ${this.price()}.`;
+    const pageTitle = `Convites digitais fácil e rápido}`;
+    const description = `Crie convites digitais modernos em minutos. Tema pronto, link compartilhável, confirmação de presença e contagem regressiva.`;
 
     const url = 'https://convitefacil.arthivia.com.br/'; // TROCAR
     const image = 'https://convitefacil.arthivia.com.br/preview.png'; // TROCAR

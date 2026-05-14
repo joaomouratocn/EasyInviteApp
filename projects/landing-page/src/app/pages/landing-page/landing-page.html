@@ -281,7 +281,19 @@
         <div
           class="relative w-full max-w-xl rounded-3xl border border-orange-500/25 bg-linear-to-b from-orange-500/15 via-orange-500/5 to-white/5 p-10 shadow-2xl shadow-orange-500/15 hover:shadow-orange-600/25 transition-all duration-300"
         >
-          <p class="mt-4 text-5xl font-black tracking-tight text-orange-400">R$ {{ price() }}</p>
+          @if (priceReceived.isLoading()) {
+            <!-- Esqueleto do Shimmer (Loading) -->
+            <div class="mt-4 h-12 w-48 animate-pulse rounded-lg bg-zinc-800">
+              <div
+                class="h-full w-full animate-shimmer bg-linear-to-r from-transparent via-zinc-700 to-transparent bg-size-[200%_100%]"
+              ></div>
+            </div>
+          } @else {
+            <!-- Preço Real (Renderizado após o Spring Boot responder) -->
+            <p class="mt-4 text-5xl font-black tracking-tight text-orange-400">
+              R$ {{ priceReceived.value()?.price }}
+            </p>
+          }
 
           <p class="mt-2 text-sm text-orange-300 font-semibold">
             pagamento único • sem mensalidade
@@ -316,9 +328,21 @@
 
           <button
             (click)="goToCreateInvite()"
-            class="mt-10 w-full rounded-xl bg-linear-to-r from-orange-500 via-orange-500 to-red-500 px-8 py-4 text-base font-black shadow-lg shadow-orange-500/30 hover:from-orange-600 hover:shadow-orange-600/40 transition-all duration-300"
+            [disabled]="priceReceived.isLoading()"
+            [class.pointer-events-none]="priceReceived.isLoading()"
+            class="mt-10 w-full rounded-xl bg-linear-to-r from-orange-500 via-orange-500 to-red-500 px-8 py-4 text-base font-black shadow-lg shadow-orange-500/30 hover:from-orange-600 hover:shadow-orange-600/40 transition-all duration-300 relative overflow-hidden flex items-center justify-center min-h-14"
           >
-            Criar convite por R$ {{ price() }}
+            @if (priceReceived.isLoading()) {
+              <!-- Esqueleto Shimmer interno do Botão -->
+              <div class="h-5 w-44 rounded bg-white/20 animate-pulse relative overflow-hidden">
+                <div
+                  class="absolute inset-0 animate-shimmer bg-linear-to-r from-transparent via-white/30 to-transparent bg-size-[200%_100%]"
+                ></div>
+              </div>
+            } @else {
+              <!-- Texto normal com o preço injetado (Ajustado para ler a propriedade .price) -->
+              <span>Criar convite por R$ {{ priceReceived.value()?.price ?? 0 }}</span>
+            }
           </button>
 
           <p class="mt-4 text-center text-xs text-orange-300">
@@ -414,14 +438,24 @@
       </div>
 
       <!-- CTA dentro do FAQ -->
-      <div class="mt-14 flex justify-center">
-        <button
-          (click)="goToCreateInvite()"
-          class="rounded-xl bg-linear-to-r from-orange-500 via-orange-500 to-red-500 px-10 py-4 font-black shadow-lg shadow-orange-500/30 hover:from-orange-600 hover:shadow-orange-600/40 transition-all duration-300"
-        >
-          Criar convite por R$ {{ price() }}
-        </button>
-      </div>
+      <button
+        (click)="goToCreateInvite()"
+        [disabled]="priceReceived.isLoading()"
+        [class.pointer-events-none]="priceReceived.isLoading()"
+        class="mt-10 w-full rounded-xl bg-linear-to-r from-orange-500 via-orange-500 to-red-500 px-8 py-4 text-base font-black shadow-lg shadow-orange-500/30 hover:from-orange-600 hover:shadow-orange-600/40 transition-all duration-300 relative overflow-hidden flex items-center justify-center min-h-14"
+      >
+        @if (priceReceived.isLoading()) {
+          <!-- Esqueleto Shimmer interno do Botão -->
+          <div class="h-5 w-44 rounded bg-white/20 animate-pulse relative overflow-hidden">
+            <div
+              class="absolute inset-0 animate-shimmer bg-linear-to-r from-transparent via-white/30 to-transparent bg-size-[200%_100%]"
+            ></div>
+          </div>
+        } @else {
+          <!-- Texto normal com o preço injetado (Ajustado para ler a propriedade .price) -->
+          <span>Criar convite por R$ {{ priceReceived.value()?.price ?? 0 }}</span>
+        }
+      </button>
 
       <p class="mt-4 text-center text-xs text-orange-300">
         Ainda tem dúvidas? Entre em contato e responderemos rapidamente.

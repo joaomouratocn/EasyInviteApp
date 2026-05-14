@@ -8,3 +8,4 @@ export * from './lib/theme-model';
 export * from './lib/color-schema';
 export * from './lib/faq-model';
 export * from './lib/guest';
+export * from './lib/price-dto';

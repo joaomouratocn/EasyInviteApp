@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
-import { InviteModel, Theme, Faq } from 'models-core';
+import { InviteModel, Theme, Faq, PriceDto } from 'models-core';
 
 @Injectable({
   providedIn: 'root',
@@ -38,8 +38,8 @@ export class InviteService {
     return this.http.get<number>(`${this.API_URL}/invite/count`);
   }
 
-  getPrice(): Observable<number> {
-    return of(23.99);
+  getPrice(): Observable<PriceDto> {
+    return this.http.get<PriceDto>(`${this.API_URL}/price`);
   }
 
   removeInvite(inviteId: string): Observable<string> {
