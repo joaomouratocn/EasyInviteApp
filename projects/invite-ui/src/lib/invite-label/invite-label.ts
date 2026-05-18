@@ -40,7 +40,7 @@ export class InviteLabel {
   });
 
   theme = rxResource({
-    params: () => this.data.value()?.theme,
+    params: () => this.data.value()?.themeId,
     stream: ({ params }) => {
       if (!params) return of(undefined); // Evita chamadas desnecessárias
       return this.inviteService.getThemeById(params);
@@ -64,8 +64,8 @@ export class InviteLabel {
     // Efeito para o Timer
     effect((onCleanup) => {
       const invite = this.data.value();
-      if (invite?.date && isPlatformBrowser(this.platformId)) {
-        this.startTimer(invite.date);
+      if (invite?.eventDate && isPlatformBrowser(this.platformId)) {
+        this.startTimer(invite.eventDate);
         onCleanup(() => this.timerId && clearInterval(this.timerId));
       }
     });
@@ -78,7 +78,7 @@ export class InviteLabel {
       property: 'og:title',
       content: `Aniversário do(a) ${this.data.value()?.name}`,
     });
-    this.meta.updateTag({ property: 'og:image', content: this.theme.value()?.bgProfImage || '' });
+    this.meta.updateTag({ property: 'og:image', content: this.theme.value()?.getBgProfImageUrl || '' });
     this.meta.updateTag({
       property: 'og:description',
       content: this.theme.value()?.subtitle || '',

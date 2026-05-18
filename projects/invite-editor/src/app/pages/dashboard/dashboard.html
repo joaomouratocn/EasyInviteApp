@@ -92,7 +92,7 @@
             <!-- COVER -->
             <div class="relative h-36 overflow-hidden bg-slate-200">
               <img
-                [src]="apiUrl + '/' + invite.theme + '.jpg'"
+                [src]="apiUrl + '/' + invite.themeId + '.jpg'"
                 alt="Cover"
                 class="w-full h-full object-cover transition duration-500 group-hover:scale-105"
               />
@@ -132,7 +132,7 @@
                   {{ invite.name }} {{ invite.age }} Anos
                 </p>
                 <p class="text-xs text-slate-200 font-medium">
-                  {{ invite.date | date: "dd 'de' MMMM 'às' HH:mm" : '' : 'pt-BR' }}
+                  {{ invite.eventDate | date: "dd 'de' MMMM 'às' HH:mm" : '' : 'pt-BR' }}
                 </p>
               </div>
             </div>
@@ -152,7 +152,7 @@
                     >Confirmados</span
                   >
                   <span class="text-lg font-bold text-blue-600 leading-none mt-1">
-                    {{ invite.confirmedCount || 0 }}
+                    {{ 1 || 0 }}
                   </span>
                 </div>
 
@@ -181,7 +181,7 @@
               <div class="mt-4 flex items-center justify-between">
                 <div class="text-xs text-slate-500">
                   Tema:
-                  <span class="text-slate-800 font-medium capitalize">{{ invite.theme }}</span>
+                  <span class="text-slate-800 font-medium capitalize">{{ invite.themeId }}</span>
                 </div>
               </div>
 

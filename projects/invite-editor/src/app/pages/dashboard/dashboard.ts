@@ -47,7 +47,7 @@ export class Dashboard {
     if (searchTerm) {
       list = list.filter(
         (i) =>
-          i.name.toLowerCase().includes(searchTerm) || i.theme.toLowerCase().includes(searchTerm),
+          i.name.toLowerCase().includes(searchTerm) || i.themeId.toLowerCase().includes(searchTerm),
       );
     }
 

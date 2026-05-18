@@ -58,7 +58,55 @@ export class EditForm {
   croppedPreview: string | null = null;
   profileFile: File | null = null;
 
-  constructor() {
+  inviteForm = this.fb.nonNullable.group({
+    id: '',
+    slug: '',
+    name: ['', [Validators.required, Validators.minLength(4)]],
+    age: [0, [Validators.required, Validators.min(1)]],
+    eventDate: ['', [Validators.required]],
+    address: ['', [Validators.required]],
+    mapUrl: '',
+    description: [[] as string[]],
+    showAge: true,
+    enableTimer: true,
+    confirmEnable: true,
+    darkMode: true,
+    imagePreview: new FormControl<string | undefined>(undefined),
+    profileUrl: new FormControl<string | undefined>(undefined),
+    themeId: new FormControl<string | ''>('', Validators.required),
+    status: new FormControl('EN'),
+    createdDate: new FormControl('')
+  });
+
+  formValue = toSignal(this.inviteForm.valueChanges, {
+    initialValue: this.inviteForm.getRawValue(),
+  });
+
+  invitePreview = computed<InviteModel>(() => {
+    const form = this.formValue();
+    this.croppedPreview = form.profileUrl ?? null;
+
+    return {
+      id: form.id || '',
+      slug: form.slug || '',
+      name: form.name || '',
+      age: form.age || 0,
+      eventDate: form.eventDate || new Date().toISOString(),
+      address: form.address || 'Endereço',
+      mapUrl: form.mapUrl || '',
+      description: form.description || [],
+      showAge: form.showAge ?? true,
+      enableTimer: form.enableTimer ?? true,
+      confirmEnable: form.confirmEnable ?? true,
+      profileUrl: form.profileUrl || null,
+      darkMode: form.darkMode ?? false,
+      themeId: form.themeId || '',
+      status: form.status || 'ACT',
+      createdDate: form.createdDate || ''
+    };
+  });
+
+    constructor() {
     const agora = new Date();
     this.minDate = agora.toISOString().slice(0, 16);
 
@@ -76,60 +124,12 @@ export class EditForm {
       } else {
         // No modo NEW: busca tema direto
         this.inviteService.getThemeById(currentId).subscribe((theme) => {
-          this.inviteForm.patchValue({ theme: currentId });
+          this.inviteForm.patchValue({ themeId: currentId });
           this.btnFinalyText.set('Criar');
         });
       }
     });
   }
-
-  inviteForm = this.fb.nonNullable.group({
-    id: '',
-    slug: '',
-    name: ['', [Validators.required, Validators.minLength(4)]],
-    age: ['', [Validators.required, Validators.min(1)]],
-    date: ['', [Validators.required]],
-    address: ['', [Validators.required]],
-    mapUrl: '',
-    description: [[] as string[]],
-    confirmedCount: 0,
-    showAge: true,
-    enableTimer: true,
-    confirmEnable: true,
-    darkMode: true,
-    imagePreview: new FormControl<string | undefined>(undefined),
-    profileUrl: new FormControl<string | undefined>(undefined),
-    theme: new FormControl<string | ''>('', Validators.required),
-    status: new FormControl('EN'),
-  });
-
-  formValue = toSignal(this.inviteForm.valueChanges, {
-    initialValue: this.inviteForm.getRawValue(),
-  });
-
-  invitePreview = computed<InviteModel>(() => {
-    const form = this.formValue();
-    this.croppedPreview = form.profileUrl ?? null;
-
-    return {
-      id: form.id || '',
-      slug: form.slug || '',
-      name: form.name || '',
-      age: form.age || '',
-      confirmedCount: form.confirmedCount || 0,
-      date: form.date || new Date().toISOString(),
-      address: form.address || 'Endereço',
-      mapUrl: form.mapUrl || '',
-      description: form.description || [],
-      showAge: form.showAge ?? true,
-      enableTimer: form.enableTimer ?? true,
-      confirmEnable: form.confirmEnable ?? true,
-      profileUrl: form.profileUrl || null,
-      darkMode: form.darkMode ?? false,
-      theme: form.theme || '',
-      status: form.status || 'ACT',
-    };
-  });
 
   save() {
     const data = this.inviteForm.getRawValue() as InviteModel;

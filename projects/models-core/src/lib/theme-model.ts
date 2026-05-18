@@ -7,9 +7,9 @@ export interface Theme {
   subtitle: string;
   modalTitle: string;
   confirmText: string;
-  cover: string;
-  bgimage: string;
-  bgProfImage: string;
+  getCoverUrl: string;
+  bgImageUrl: string;
+  getBgProfImageUrl: string;
   light: ColorSchema;
   dark: ColorSchema;
 }

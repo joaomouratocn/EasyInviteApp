@@ -13,7 +13,7 @@
     [style.--border-radius]="schema()?.borderRadius"
     [style.--input-bg]="schema()?.inputBg"
     [style.--input-placeholder]="schema()?.inputPlaceholder"
-    [style.background]="'url(' + this.theme.value()?.bgimage + ') center / cover no-repeat'"
+    [style.background]="'url(' + this.theme.value()?.bgImageUrl + ') center / cover no-repeat'"
     class="min-h-screen flex justify-center items-start p-4"
   >
     <div
@@ -21,7 +21,7 @@
     >
       <div
         class="h-72 flex items-center justify-center p-6 text-center font-bold italic relative overflow-hidden"
-        [style.background]="'url(' + this.theme.value()?.bgProfImage + ') center / cover no-repeat'"
+        [style.background]="'url(' + this.theme.value()?.getBgProfImageUrl + ') center / cover no-repeat'"
       >
         <!-- escurece um pouco para dar contraste no texto -->
         <div class="absolute inset-0 bg-black/30"></div>
@@ -71,7 +71,7 @@
               >Data & Hora</span
             >
             <p class="font-bold text-(--text) text-lg">
-              {{ data.value()?.date | date: "dd 'de' MMMM 'às' HH:mm" : '' : 'pt-BR' }}
+              {{ data.value()?.eventDate | date: "dd 'de' MMMM 'às' HH:mm" : '' : 'pt-BR' }}
             </p>
           </div>
 

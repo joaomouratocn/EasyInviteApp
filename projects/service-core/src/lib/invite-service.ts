@@ -19,7 +19,7 @@ export class InviteService {
   }
 
   getThemes(): Observable<Theme[]> {
-    return this.http.get<Theme[]>(`${this.API_URL}/themes`);
+    return this.http.get<Theme[]>(`${this.API_URL}/themes/getall`);
   }
 
   getThemeById(id: string): Observable<Theme> {
