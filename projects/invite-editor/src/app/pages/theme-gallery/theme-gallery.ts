@@ -4,7 +4,6 @@ import { RouterModule } from '@angular/router';
 import { Theme } from 'models-core';
 import { InviteService } from 'service-core';
 import { WhatsButtonComponent } from 'invite-ui';
-import { environment } from '../../../environment/environment.pdod';
 
 @Component({
   selector: 'app-theme-gallery',
@@ -13,7 +12,7 @@ import { environment } from '../../../environment/environment.pdod';
   styleUrl: './theme-gallery.css',
 })
 export class ThemeGallery {
-  readonly baseBucketUrl = environment.imagesUrlApi; 
+  readonly baseBucketUrl = environment.imagesUrlApi;
   private inviteService = inject(InviteService);
 
   themes = signal<Theme[]>([]);
@@ -21,8 +20,7 @@ export class ThemeGallery {
   ngOnInit() {
     this.inviteService.getThemes().subscribe({
       next: (data) => {
-        console.log(`${this.baseBucketUrl}+${data[0].getCoverUrl}`)
-        this.themes.set(data)
+        this.themes.set(data);
       },
       error: (err) => console.error(err),
     });

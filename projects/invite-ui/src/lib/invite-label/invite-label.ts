@@ -1,13 +1,13 @@
-import { DatePipe } from '@angular/common';
+import { DatePipe, isPlatformBrowser, registerLocaleData } from '@angular/common';
+import localePt from '@angular/common/locales/pt';
 import { Component, computed, effect, inject, input, PLATFORM_ID, signal } from '@angular/core';
+import { rxResource } from '@angular/core/rxjs-interop';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Meta, Title } from '@angular/platform-browser';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { InviteModel } from 'models-core';
-import { map, of } from 'rxjs';
+import { of } from 'rxjs';
 import { InviteService } from 'service-core';
-import localePt from '@angular/common/locales/pt';
-import { registerLocaleData, isPlatformBrowser } from '@angular/common';
+import { LIB_CONFIG } from '../config.token';
 registerLocaleData(localePt);
 
 @Component({
@@ -22,6 +22,7 @@ export class InviteLabel {
   private platformId = inject(PLATFORM_ID);
   private inviteService = inject(InviteService);
   private timerId: any;
+  config = inject(LIB_CONFIG);
 
   received = input.required<string | InviteModel>();
 
@@ -43,12 +44,14 @@ export class InviteLabel {
     params: () => this.data.value()?.themeId,
     stream: ({ params }) => {
       if (!params) return of(undefined); // Evita chamadas desnecessárias
-      return this.inviteService.getThemeById(params);
+      const theme = this.inviteService.getThemeById(params);
     },
   });
 
   schema = computed(() => {
-    return this.data.value()?.darkMode ? this.theme.value()?.dark : this.theme.value()?.light;
+    return this.data.value()?.darkMode
+      ? this.theme.value()?.darkTheme
+      : this.theme.value()?.lightTheme;
   });
 
   constructor() {
@@ -78,7 +81,10 @@ export class InviteLabel {
       property: 'og:title',
       content: `Aniversário do(a) ${this.data.value()?.name}`,
     });
-    this.meta.updateTag({ property: 'og:image', content: this.theme.value()?.getBgProfImageUrl || '' });
+    this.meta.updateTag({
+      property: 'og:image',
+      content: this.theme.value()?.getBgProfImageUrl || '',
+    });
     this.meta.updateTag({
       property: 'og:description',
       content: this.theme.value()?.subtitle || '',

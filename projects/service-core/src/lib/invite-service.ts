@@ -22,8 +22,8 @@ export class InviteService {
     return this.http.get<Theme[]>(`${this.API_URL}/themes/getall`);
   }
 
-  getThemeById(id: string): Observable<Theme> {
-    return this.http.get<Theme>(`${this.API_URL}/themes/${id}`);
+  getThemeById(themeId: string): Observable<Theme> {
+    return this.http.get<Theme>(`${this.API_URL}/themes/${themeId}`);
   }
 
   getFaqs(): Observable<Faq[]> {
@@ -35,7 +35,7 @@ export class InviteService {
   }
 
   getInviteAmount(): Observable<number> {
-    return this.http.get<number>(`${this.API_URL}/invite/count`);
+    return this.http.get<number>(`${this.API_URL}/invites/count`);
   }
 
   getPrice(): Observable<PriceDto> {

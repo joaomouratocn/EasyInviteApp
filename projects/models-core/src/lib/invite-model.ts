@@ -16,5 +16,5 @@ export interface InviteModel {
   darkMode: boolean;
   themeId: string;
   status: string;
-  createdDate:string;
+  createdAt:string;
 }

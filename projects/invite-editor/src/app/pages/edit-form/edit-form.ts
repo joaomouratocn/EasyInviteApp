@@ -5,12 +5,12 @@ import {
   effect,
   ElementRef,
   inject,
-  Input,
   input,
   model,
   signal,
   ViewChild,
 } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormControl,
@@ -18,14 +18,12 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router, RouterModule } from '@angular/router';
+import { InviteLabel } from 'invite-ui';
 import { InviteModel } from 'models-core';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { InviteService } from 'service-core';
-import { InviteLabel } from 'invite-ui';
-import { toSignal, rxResource } from '@angular/core/rxjs-interop';
-import { Router, RouterModule } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { of, switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-edit-form',
@@ -75,7 +73,7 @@ export class EditForm {
     profileUrl: new FormControl<string | undefined>(undefined),
     themeId: new FormControl<string | ''>('', Validators.required),
     status: new FormControl('EN'),
-    createdDate: new FormControl('')
+    createdAt: new FormControl(''),
   });
 
   formValue = toSignal(this.inviteForm.valueChanges, {
@@ -102,11 +100,11 @@ export class EditForm {
       darkMode: form.darkMode ?? false,
       themeId: form.themeId || '',
       status: form.status || 'ACT',
-      createdDate: form.createdDate || ''
+      createdAt: form.createdAt || '',
     };
   });
 
-    constructor() {
+  constructor() {
     const agora = new Date();
     this.minDate = agora.toISOString().slice(0, 16);
 

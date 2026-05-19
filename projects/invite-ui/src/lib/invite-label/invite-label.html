@@ -21,7 +21,12 @@
     >
       <div
         class="h-72 flex items-center justify-center p-6 text-center font-bold italic relative overflow-hidden"
-        [style.background]="'url(' + this.theme.value()?.getBgProfImageUrl + ') center / cover no-repeat'"
+        [style.backgroundImage]="
+          theme.value()?.getBgProfImageUrl
+            ? 'url(' + config.baseUrlRequest + theme.value()?.getBgProfImageUrl + ')'
+            : 'none'
+        "
+        style="background-position: center; background-size: cover; background-repeat: no-repeat"
       >
         <!-- escurece um pouco para dar contraste no texto -->
         <div class="absolute inset-0 bg-black/30"></div>

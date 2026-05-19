@@ -10,6 +10,6 @@ export interface Theme {
   getCoverUrl: string;
   bgImageUrl: string;
   getBgProfImageUrl: string;
-  light: ColorSchema;
-  dark: ColorSchema;
+  lightTheme: ColorSchema;
+  darkTheme: ColorSchema;
 }

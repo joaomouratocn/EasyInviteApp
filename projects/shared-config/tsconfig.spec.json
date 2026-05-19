@@ -3,12 +3,8 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "../../out-tsc/lib",
-    "declaration": true,
-    "declarationMap": true,
-    "types": []
+    "outDir": "../../out-tsc/spec",
+    "types": ["vitest/globals"]
   },
-  "include": ["src/**/*.ts", "src/lib/config.token.ts"],
-  "exclude": ["**/*.spec.ts"]
+  "include": ["src/**/*.d.ts", "src/**/*.spec.ts"]
 }

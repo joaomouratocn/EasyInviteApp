@@ -2,7 +2,7 @@ import { CommonModule, DecimalPipe, isPlatformBrowser, NgClass } from '@angular/
 import { Component, effect, inject, Inject, PLATFORM_ID, signal } from '@angular/core';
 import { InviteService } from 'service-core';
 import { Meta, Title } from '@angular/platform-browser';
-import { environment } from '../../../environment/environment';
+import { environment } from 'shared-config';
 import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
@@ -78,7 +78,7 @@ export class LandingPage {
   }
 
   entry() {
-    window.location.href = `${environment.urlLogin}`;
+    window.location.href = `${environment.urlInviteEditor}/login`;
   }
 
   private setSeo() {

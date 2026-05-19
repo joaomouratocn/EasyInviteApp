@@ -9,6 +9,6 @@
     "declarationMap": true,
     "types": []
   },
-  "include": ["src/**/*.ts", "src/lib/config.token.ts"],
+  "include": ["src/**/*.ts", "../invite-ui/src/lib/config.token.ts"],
   "exclude": ["**/*.spec.ts"]
 }

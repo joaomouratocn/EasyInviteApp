@@ -7,6 +7,10 @@
     "outDir": "../../out-tsc/app",
     "types": []
   },
-  "include": ["src/**/*.ts"],
+  "include": [
+    "src/**/*.ts",
+    "../shared-config/src/lib/environments/environment.prod.ts",
+    "../shared-config/src/lib/environments/environment.ts"
+  ],
   "exclude": ["src/**/*.spec.ts"]
 }

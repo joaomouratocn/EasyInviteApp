@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { InviteService } from 'service-core';
-import { environment } from '../../../environment/environment.pdod';
+import { environment } from '../../../../../shared-config/src/lib/environments/environment.prod';
 
 @Component({
   selector: 'app-dashboard',

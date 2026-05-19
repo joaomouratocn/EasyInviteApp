@@ -15,7 +15,8 @@
       "invite-environments": ["./dist/invite-environments"],
       "invite-ui": ["./dist/invite-ui"],
       "models-core": ["./dist/models-core"],
-      "service-core": ["./dist/service-core"]
+      "service-core": ["./dist/service-core"],
+      "shared-config": ["./dist/shared-config"]
     },
     "importHelpers": true,
     "target": "ES2022",
@@ -70,6 +71,12 @@
     },
     {
       "path": "./projects/manager/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/shared-config/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/shared-config/tsconfig.spec.json"
     }
   ]
 }
