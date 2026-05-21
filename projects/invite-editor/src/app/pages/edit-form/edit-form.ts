@@ -20,10 +20,11 @@ import {
 } from '@angular/forms';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router, RouterModule } from '@angular/router';
-import { InviteLabel } from 'invite-ui';
+import { InviteLabel, LIB_CONFIG } from 'invite-ui';
 import { InviteModel } from 'models-core';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 import { InviteService } from 'service-core';
+import { environment } from 'shared-config';
 
 @Component({
   selector: 'app-edit-form',
@@ -38,6 +39,12 @@ import { InviteService } from 'service-core';
   ],
   templateUrl: './edit-form.html',
   styleUrl: './edit-form.css',
+  providers: [
+    {
+      provide: LIB_CONFIG,
+      useValue: environment,
+    },
+  ],
 })
 export class EditForm {
   @ViewChild('fileInput') fileInput!: ElementRef;

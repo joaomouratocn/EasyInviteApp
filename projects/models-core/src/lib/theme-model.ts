@@ -4,7 +4,7 @@ export interface Theme {
   id: string;
   themeName: string;
   title: string;
-  subtitle: string;
+  subTitle: string;
   modalTitle: string;
   confirmText: string;
   getCoverUrl: string;

@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Theme } from 'models-core';
 import { InviteService } from 'service-core';
 import { WhatsButtonComponent } from 'invite-ui';
+import { environment } from 'shared-config';
 
 @Component({
   selector: 'app-theme-gallery',
@@ -12,7 +13,7 @@ import { WhatsButtonComponent } from 'invite-ui';
   styleUrl: './theme-gallery.css',
 })
 export class ThemeGallery {
-  readonly baseBucketUrl = environment.imagesUrlApi;
+  readonly baseBucketUrl = environment.baseUrlRequest;
   private inviteService = inject(InviteService);
 
   themes = signal<Theme[]>([]);
