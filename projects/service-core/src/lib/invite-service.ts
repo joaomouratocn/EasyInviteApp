@@ -10,8 +10,26 @@ export class InviteService {
   private http = inject(HttpClient);
   private readonly API_URL = '/api';
 
-  saveInvite(invitation: InviteModel): Observable<true> {
-    return of(true);
+  saveInvite(invite: InviteModel, profileFile: File | null): Observable<string> {
+    const formData = new FormData();
+
+    formData.append('name', invite.name);
+    formData.append('age', invite.age.toString());
+    formData.append('eventDate', invite.eventDate);
+    formData.append('address', invite.address);
+    formData.append('mapUrl', invite.mapUrl ?? '');
+    formData.append('description', JSON.stringify(invite.description ?? []));
+    formData.append('showAge', String(invite.showAge));
+    formData.append('enableTimer', String(invite.enableTimer));
+    formData.append('confirmEnable', String(invite.confirmEnable));
+    formData.append('darkMode', String(invite.darkMode));
+    formData.append('themeId', invite.themeId);
+
+    if (profileFile) {
+      formData.append('profileFile', profileFile);
+    }
+
+    return this.http.post<string>(`${this.API_URL}/invites/save`, formData);
   }
 
   getInvite(slug: String): Observable<InviteModel> {

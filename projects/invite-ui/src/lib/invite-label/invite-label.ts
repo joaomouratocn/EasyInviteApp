@@ -67,7 +67,7 @@ export class InviteLabel implements OnDestroy {
     }
 
     return {
-      profImage: `${baseUrl}${data?.profileUrl}`,
+      profImage: this.previewMode() ? `${data?.profileUrl}` : `${baseUrl}${data?.profileUrl}`,
       profBgUrl: themeValue.getBgProfImageUrl
         ? `url('${baseUrl}${themeValue.getBgProfImageUrl}')`
         : 'none',

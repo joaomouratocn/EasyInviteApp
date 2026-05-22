@@ -1,7 +1,8 @@
 import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { RouterLink } from '@angular/router';
 import { AuthService } from 'service-core';
+import { environment } from 'shared-config';
 
 declare const google: any;
 
@@ -17,7 +18,7 @@ export class LoginPage {
 
   ngOnInit(): void {
     google.accounts.id.initialize({
-      client_id: '370415873876-ocdod6anb1833eb8q7n45dt49bj0d9pe.apps.googleusercontent.com',
+      client_id: environment.googleClientId,
       callback: (response: any) => {
         this.authService.setUser(response);
       },

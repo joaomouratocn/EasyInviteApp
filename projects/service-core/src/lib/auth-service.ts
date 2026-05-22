@@ -1,8 +1,11 @@
+import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private http = inject(HttpClient);
+  private readonly API_URL = '/api';
   private router = inject(Router);
   private storageKey = 'auth_user';
 
@@ -10,8 +13,9 @@ export class AuthService {
   readonly user = this._user.asReadonly();
   readonly isLoggedIn = computed(() => !!this._user());
 
-  setUser(response: any) {
+  loginUser(response: any) {
     const payload = this.decodeJwt(response.credential);
+    this.http.post<string>(`${this.API_URL}/auth/google`, response);
 
     const user = {
       name: payload.name,

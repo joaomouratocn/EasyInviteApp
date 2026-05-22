@@ -53,8 +53,6 @@ export class EditForm {
   private snackBar = inject(MatSnackBar);
   private inviteService = inject(InviteService);
   descriptionInputText = model<string>('');
-  imageChangedEvent: any = '';
-  isEditingPhoto = false;
   minDate: string = '';
   btnFinalyText = signal('Criar');
   id = input.required<string>();
@@ -62,6 +60,8 @@ export class EditForm {
   croppedBlob: Blob | null = null;
   croppedPreview: string | null = null;
   profileFile: File | null = null;
+  imageChangedEvent: any = '';
+  isEditingPhoto = false;
 
   inviteForm = this.fb.nonNullable.group({
     id: '',
@@ -138,10 +138,11 @@ export class EditForm {
 
   save() {
     const data = this.inviteForm.getRawValue() as InviteModel;
-    this.inviteService.saveInvite(data).subscribe({
+    this.inviteService.saveInvite(data, this.profileFile).subscribe({
       next: (result) => {
         if (result) {
-          localStorage.setItem('tempId', '123');
+          localStorage.setItem('tempId', result);
+          console.log(result);
           this.router.navigate(['login']);
         }
       },
@@ -185,7 +186,8 @@ export class EditForm {
 
   imageCropped(event: ImageCroppedEvent) {
     this.croppedBlob = event.blob ?? null;
-    this.croppedPreview = event.objectUrl ?? event.base64 ?? null;
+    // Dá preferência para o base64 para evitar problemas de segurança do Angular
+    this.croppedPreview = event.objectUrl ?? null;
   }
 
   fileChangeEvent(event: any): void {
@@ -194,18 +196,17 @@ export class EditForm {
   }
 
   savePhoto() {
-    if (!this.croppedBlob) return;
+    if (!this.croppedBlob || !this.croppedPreview) return;
 
+    // Mantém a criação do arquivo se você ainda precisar dele para enviar ao servidor depois
     const file = new File([this.croppedBlob], 'profile.jpg', {
       type: this.croppedBlob.type || 'image/jpeg',
     });
-
-    const tempUrl = URL.createObjectURL(file);
-
     this.profileFile = file;
 
+    // SALVE O BASE64
     this.inviteForm.patchValue({
-      profileUrl: tempUrl,
+      profileUrl: this.croppedPreview, // Aqui vai a string da imagem pronta
     });
 
     this.isEditingPhoto = false;
@@ -284,11 +285,5 @@ export class EditForm {
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
     });
-  }
-
-  async urlToFile(url: string, fileName: string): Promise<File> {
-    const response = await fetch(url);
-    const blob = await response.blob();
-    return new File([blob], fileName, { type: blob.type });
   }
 }

@@ -82,11 +82,11 @@ export class LandingPage {
   }
 
   protected goToCreateInvite(): void {
-    this.navigateToUrl(environment.urlInviteEditor);
+    this.navigateToUrl(`${environment.urlInviteEditor}/gallery`);
   }
 
   protected entry(): void {
-    this.navigateToUrl(`${environment.urlInviteEditor}/login`);
+    this.navigateToUrl(`${environment.urlInviteEditor}`);
   }
 
   private navigateToUrl(url: string): void {

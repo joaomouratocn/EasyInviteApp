@@ -90,7 +90,7 @@
                   class="relative group w-20 h-20 rounded-full border-2 border-dashed border-slate-300 bg-slate-50 flex items-center justify-center overflow-hidden cursor-pointer hover:border-blue-400 transition-all shadow-inner"
                 >
                   @if (inviteForm.get('profileUrl')?.value) {
-                    <img [src]="imageCropped" class="w-full h-full object-cover" />
+                    <img [src]="croppedPreview" class="w-full h-full object-cover" />
                     <div
                       class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
                     >
