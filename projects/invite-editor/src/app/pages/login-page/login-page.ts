@@ -20,7 +20,7 @@ export class LoginPage {
     google.accounts.id.initialize({
       client_id: environment.googleClientId,
       callback: (response: any) => {
-        this.authService.setUser(response);
+        this.authService.loginUser(response);
       },
     });
 

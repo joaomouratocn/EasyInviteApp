@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Router } from '@angular/router';
+import { UserLoginResponseDto } from 'models-core';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -13,19 +14,16 @@ export class AuthService {
   readonly user = this._user.asReadonly();
   readonly isLoggedIn = computed(() => !!this._user());
 
-  loginUser(response: any) {
-    const payload = this.decodeJwt(response.credential);
-    this.http.post<string>(`${this.API_URL}/auth/google`, response);
-
-    const user = {
-      name: payload.name,
-      email: payload.email,
-      picture: payload.picture,
-    };
-
-    this._user.set(user);
-    localStorage.setItem(this.storageKey, JSON.stringify(user));
-    this.router.navigate(['/dashboard']);
+  loginUser(googleResponse: any) {
+    const credential: string = googleResponse.credential;
+    this.http.post<UserLoginResponseDto>(`${this.API_URL}/auth/google`, { credential }).subscribe({
+      next: (response) => {
+            this._user.set(response);
+        localStorage.setItem(this.storageKey, JSON.stringify(response));
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err) => console.error('Login failed:', err)
+    });
   }
 
   logout() {
@@ -37,19 +35,5 @@ export class AuthService {
   private loadUser() {
     const raw = localStorage.getItem(this.storageKey);
     return raw ? JSON.parse(raw) : null;
-  }
-
-  private decodeJwt(token: string) {
-    const payload = token.split('.')[1];
-    const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-
-    const json = decodeURIComponent(
-      atob(base64)
-        .split('')
-        .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-        .join(''),
-    );
-
-    return JSON.parse(json);
   }
 }
