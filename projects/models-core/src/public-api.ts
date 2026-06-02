@@ -9,4 +9,6 @@ export * from './lib/color-schema';
 export * from './lib/faq-model';
 export * from './lib/guest';
 export * from './lib/price-dto';
-export * from './lib/user-login-response-dto';
+export * from './lib/user';
+export * from './lib/login-request';
+export * from './lib/register-request';
