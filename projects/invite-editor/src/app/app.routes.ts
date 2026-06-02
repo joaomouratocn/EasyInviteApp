@@ -5,19 +5,19 @@ import { NotFoundPage } from 'invite-ui';
 import { LoginPage } from './pages/login-page/login-page';
 import { Dashboard } from './pages/dashboard/dashboard';
 import { AuthGuardLogged } from './core/auth-guard-login';
-import { AuthGuardLogout } from './core/auth-guard-logout';
+import { AuthGuardGuest } from './core/auth-guard-guest';
 import { ConfirmedList } from './pages/confirmed-list/confirmed-list';
 import { Register } from './pages/register/register';
 import { ForgotPassword } from './pages/forgot-password/forgot-password';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '\login', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'register', component: Register },
   { path: 'edit/:id', component: EditForm },
   { path: 'gallery', component: ThemeGallery },
   { path: 'forgot', component: ForgotPassword },
   { path: 'confirmed/:id', component: ConfirmedList, canActivate: [AuthGuardLogged] },
-  { path: 'login', component: LoginPage, canActivate: [AuthGuardLogout] },
+  { path: 'login', component: LoginPage, canActivate: [AuthGuardGuest] },
   { path: 'dashboard', component: Dashboard, canActivate: [AuthGuardLogged] },
   { path: '**', component: NotFoundPage },
 ];

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { InviteModel, Theme, Faq, PriceDto } from 'models-core';
+import { Observable} from 'rxjs';
+import { InviteModel, Theme, Faq, PriceDto, InviteModelWithTheme } from 'models-core';
 
 @Injectable({
   providedIn: 'root',
@@ -48,8 +48,9 @@ export class InviteService {
     return this.http.get<Faq[]>(`${this.API_URL}/faqs/getall`);
   }
 
-  getInvites(): Observable<InviteModel[]> {
-    return this.http.get<InviteModel[]>(`${this.API_URL}/invites`);
+  getInvites(userId: string): Observable<InviteModelWithTheme[]> {
+    const result =  this.http.get<InviteModelWithTheme[]>(`${this.API_URL}/invites/user/${userId}`);
+    return result;
   }
 
   getInviteAmount(): Observable<number> {

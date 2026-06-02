@@ -1,5 +1,5 @@
 import { NgClass } from '@angular/common';
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -8,6 +8,8 @@ import {
   ValidationErrors,
   Validators,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from 'service-core';
 
 @Component({
   selector: 'app-register',
@@ -16,9 +18,13 @@ import {
   styleUrl: './register.css',
 })
 export class Register {
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
   registerForm: FormGroup;
   showPassword = signal(false);
   showPasswordConfirm = signal(false);
+  isLoading = signal(false);
 
   constructor(private fb: FormBuilder) {
     this.registerForm = this.fb.nonNullable.group(
@@ -44,8 +50,23 @@ export class Register {
 
   onSubmit() {
     if (this.registerForm.valid) {
+      this.isLoading.set(true);
       console.log('Dados do Cadastro:', this.registerForm.value);
-      // Aqui você chamaria seu serviço de API
+      const newUser = {
+        email: this.registerForm.value.email,
+        name: this.registerForm.value.fullName,
+        password: this.registerForm.value.password,
+        sendNewsletter: this.registerForm.value.newsletter,
+      };
+      this.authService.register(newUser).subscribe({
+        next: () => {
+          this.router.navigate(['/dashboard']);
+        },
+        error: (err) => {
+          console.error('Erro ao registrar usuário:', err);
+          this.isLoading.set(false);
+        }
+      });
     } else {
       this.registerForm.markAllAsTouched();
     }

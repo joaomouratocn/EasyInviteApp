@@ -1,40 +1,35 @@
-// src/app/core/interceptors/auth.interceptor.ts
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import {
   HttpRequest,
   HttpHandler,
   HttpEvent,
   HttpInterceptor,
-  HttpErrorResponse,
+  HttpErrorResponse
 } from '@angular/common/http';
 import { Observable, throwError, BehaviorSubject } from 'rxjs';
 import { catchError, filter, take, switchMap } from 'rxjs/operators';
-import { AuthService } from 'service-core';
+import { AuthService } from './auth-service';
 import { Router } from '@angular/router';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
+  private router: Router = inject(Router);
+  private authService = inject(AuthService);
   private isRefreshing = false;
   private refreshTokenSubject = new BehaviorSubject<boolean>(false);
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-  ) {}
-
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    // ✅ Adiciona withCredentials em todas as requisições
     const authRequest = request.clone({
-      withCredentials: true,
+      withCredentials: true
     });
 
     return next.handle(authRequest).pipe(
       catchError((error: HttpErrorResponse) => {
-        if (error.status === 401 && !request.url.includes('/auth/logout')) {
+        if (error.status === 401 && !request.url.includes('api/auth/logout')) {
           return this.handle401Error(request, next);
         }
         return throwError(() => error);
-      }),
+      })
     );
   }
 
@@ -43,32 +38,33 @@ export class AuthInterceptor implements HttpInterceptor {
       this.isRefreshing = true;
       this.refreshTokenSubject.next(false);
 
-      // ✅ Tenta verificar autenticação (cookie pode ainda ser válido)
       return this.authService.checkAuth().pipe(
-        switchMap((isAuthenticated) => {
+        switchMap(isAuthenticated => {
           this.isRefreshing = false;
           this.refreshTokenSubject.next(true);
 
           if (isAuthenticated) {
             return next.handle(request.clone({ withCredentials: true }));
           } else {
-            // ✅ Não é mais autenticado → redireciona para login
-            this.authService.logout();
+            this.authService.logout().subscribe({
+              next: () => {this.router.navigate(['/login']);},
+              error: (err) => {console.error('Logout failed', err);},
+            });
             return throwError(() => new Error('Sessão expirada'));
           }
         }),
-        catchError((err) => {
+        catchError(err => {
           this.isRefreshing = false;
           this.refreshTokenSubject.next(false);
           return throwError(() => err);
-        }),
+        })
       );
     }
 
     return this.refreshTokenSubject.pipe(
-      filter((isRefreshed) => isRefreshed),
+      filter(isRefreshed => isRefreshed),
       take(1),
-      switchMap(() => next.handle(request.clone({ withCredentials: true }))),
+      switchMap(() => next.handle(request.clone({ withCredentials: true })))
     );
   }
 }

@@ -7,7 +7,7 @@
       alt="logo"
       class="h-10 sm:h-16 w-auto max-w-full object-contain"
     />
-    @if (user(); as u) {
+    @if (user$ | async; as u) {
       <div class="flex items-center gap-3">
         <div class="hidden sm:flex flex-col text-right">
           <p class="text-sm font-medium text-slate-800">{{ u.name }}</p>

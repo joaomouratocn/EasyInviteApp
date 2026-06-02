@@ -2,12 +2,11 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { DatePipe, NgClass } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { of, switchMap } from 'rxjs';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { InviteService } from 'service-core';
+import { AuthService, InviteService } from 'service-core';
 import { environment } from 'shared-config';
-import { InviteModel } from 'models-core';
 
-// Tipagem estrita para evitar erros com strings mágicas
 export type InviteFilterStatus = 'ALL' | 'ACT' | 'EXP' | 'WAP';
 
 @Component({
@@ -19,46 +18,43 @@ export type InviteFilterStatus = 'ALL' | 'ACT' | 'EXP' | 'WAP';
 })
 export class Dashboard {
   readonly apiUrl = environment.baseUrlRequest;
+  private readonly authService = inject(AuthService);
   private readonly inviteService = inject(InviteService);
   private readonly router = inject(Router);
 
-  // Sinais de controle de estado do usuário
   filter = signal<InviteFilterStatus>('ALL');
   search = signal('');
 
-  // Requisição reativa de dados
   invites = rxResource({
-    params: () => ({}), // Mantém estrutura limpa caso precise de parâmetros futuros
-    stream: () => this.inviteService.getInvites(),
+    params: () => ({}),
+    stream: () =>
+      this.authService.currentUser$.pipe(
+        switchMap((user) => (user ? this.inviteService.getInvites(user.id) : of([])))
+      ),
   });
 
-  // Getter utilitário para evitar repetição de fallbacks de array vazio
   private readonly inviteList = computed(() => this.invites.value() ?? []);
 
-  // Lista filtrada em uma única passada limpa
   filteredInvites = computed(() => {
     const list = this.inviteList();
     const currentFilter = this.filter();
     const searchTerm = this.search().trim().toLowerCase();
 
     return list.filter((invite) => {
-      // 1. Filtro por Status (Corrigido: comparando com a string de status real)
       if (currentFilter !== 'ALL' && invite.status !== currentFilter) {
         return false;
       }
 
-      // 2. Filtro por Busca Textual
       if (searchTerm) {
         const matchesName = invite.name?.toLowerCase().includes(searchTerm);
-        const matchesTheme = invite.themeId?.toLowerCase().includes(searchTerm);
-        return matchesName || matchesTheme;
+        const matchesId = invite.id?.toLowerCase().includes(searchTerm);
+        return matchesName || matchesId;
       }
 
       return true;
     });
   });
 
-  // Contadores calculados de forma otimizada reutilizando o sinal base
   totalActive = computed(() => this.countByStatus('ACT'));
   totalExpired = computed(() => this.countByStatus('EXP'));
   totalWaitPayment = computed(() => this.countByStatus('WAP'));
@@ -91,7 +87,7 @@ export class Dashboard {
 
   openInvite(slug?: string): void {
     if (slug) {
-      window.open(`${environment.urlInvite}/${slug}`, '_blank'); // Melhorado para abrir em nova aba
+      window.open(`${environment.urlInvite}/${slug}`, '_blank');
     }
   }
 
