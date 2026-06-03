@@ -2,6 +2,7 @@ import { Theme } from './theme-model';
 
 export interface InviteModel {
   id?: string;
+  userId?: string;
   name: string;
   slug?: string;
   age: number;
@@ -15,6 +16,7 @@ export interface InviteModel {
   profileUrl: string | null;
   darkMode: boolean;
   themeId: string;
+  theme?: Theme;
   status: string;
   createdAt:string;
 }

@@ -28,6 +28,7 @@ import { environment } from 'shared-config';
 
 @Component({
   selector: 'app-edit-form',
+  standalone: true,
   imports: [
     FormsModule,
     ReactiveFormsModule,
@@ -51,22 +52,29 @@ export class EditForm {
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private snackBar = inject(MatSnackBar);
-  private inviteService = inject(InviteService);
+
   descriptionInputText = model<string>('');
   minDate: string = '';
   btnFinalyText = signal('Criar');
-  id = input.required<string>();
-  mode = input.required<string>();
+  
+  // Inputs vindos do roteador
+  id = input.required<string>(); // Pode ser o inviteId ou o themeId
+  mode = input.required<'new' | 'edit' | 'page'>();
+
   croppedBlob: Blob | null = null;
   croppedPreview: string | null = null;
   profileFile: File | null = null;
   imageChangedEvent: any = '';
   isEditingPhoto = false;
 
+  // Signal que guarda o objeto completo (incluindo o tema interno)
+  inviteShared = signal<any | null>(null);
+
   inviteForm = this.fb.nonNullable.group({
     id: '',
-    slug: '',
+    userId: '',
     name: ['', [Validators.required, Validators.minLength(4)]],
+    slug: '',
     age: [0, [Validators.required, Validators.min(1)]],
     eventDate: ['', [Validators.required]],
     address: ['', [Validators.required]],
@@ -75,81 +83,82 @@ export class EditForm {
     showAge: true,
     enableTimer: true,
     confirmEnable: true,
-    darkMode: true,
-    imagePreview: new FormControl<string | undefined>(undefined),
     profileUrl: new FormControl<string | undefined>(undefined),
+    darkMode: true,
     themeId: new FormControl<string | ''>('', Validators.required),
-    status: new FormControl('EN'),
+    theme: null,
+    status: new FormControl('WAP'),
     createdAt: new FormControl(''),
   });
 
-  formValue = toSignal(this.inviteForm.valueChanges, {
-    initialValue: this.inviteForm.getRawValue(),
-  });
-
-  invitePreview = computed<InviteModel>(() => {
-    const form = this.formValue();
-    this.croppedPreview = form.profileUrl ?? null;
-
-    return {
-      id: form.id || '',
-      slug: form.slug || '',
-      name: form.name || '',
-      age: form.age || 0,
-      eventDate: form.eventDate || new Date().toISOString(),
-      address: form.address || 'Endereço',
-      mapUrl: form.mapUrl || '',
-      description: form.description || [],
-      showAge: form.showAge ?? true,
-      enableTimer: form.enableTimer ?? true,
-      confirmEnable: form.confirmEnable ?? true,
-      profileUrl: form.profileUrl || null,
-      darkMode: form.darkMode ?? false,
-      themeId: form.themeId || '',
-      status: form.status || 'ACT',
-      createdAt: form.createdAt || '',
-    };
+  // Transforma as mudanças do formulário reativo em um Signal legível
+  private formValueSignal = toSignal(this.inviteForm.valueChanges, {
+    value: this.inviteForm.getRawValue()
   });
 
   constructor() {
     const agora = new Date();
     this.minDate = agora.toISOString().slice(0, 16);
 
+    // MUDANÇA DE TEXTO DO BOTÃO BASEADO NO MODO
     effect(() => {
-      // O effect monitora automaticamente os inputs 'id' e 'mode'
-      const currentId = this.id();
-      const currentMode = this.mode();
+      this.btnFinalyText.set(this.mode() === 'edit' ? 'Salvar Alterações' : 'Criar');
+    });
 
-      if (currentMode === 'edit') {
-        // No modo EDIT: busca convite -> depois tema
-        this.inviteService.getInvite(currentId).subscribe((invite) => {
-          this.inviteForm.patchValue(invite);
-          this.btnFinalyText.set('Salvar');
-        });
-      } else {
-        // No modo NEW: busca tema direto
-        this.inviteService.getThemeById(currentId).subscribe((theme) => {
-          this.inviteForm.patchValue({ themeId: currentId });
-          this.btnFinalyText.set('Criar');
-        });
+    // FLUXO 1: Sempre que o usuário digitar no formulário, atualiza o preview (Pai -> Filho)
+    effect(() => {
+      const formValues = this.formValueSignal();
+      const estadoAtual = this.inviteShared();
+
+      // Mantém o objeto do tema vivo dentro do signal enquanto atualiza os textos
+      this.inviteShared.set({
+        ...formValues,
+        theme: estadoAtual?.theme // Preserva o tema buscado pela API do filho
+      });
+    });
+
+    // FLUXO 2: Quando o filho carregar os dados da API (ex: no modo 'new' ou 'edit'),
+    // nós atualizamos os campos do formulário reativo do Pai (Filho -> Pai)
+    effect(() => {
+      const dadosDoFilho = this.inviteShared();
+      if (dadosDoFilho && dadosDoFilho.theme && !this.inviteForm.get('themeId')?.value) {
+        // Desativa temporariamente a emissão de eventos para evitar loops infinitos
+        this.inviteForm.patchValue({
+          id: dadosDoFilho.id,
+          name: dadosDoFilho.name,
+          age: dadosDoFilho.age,
+          address: dadosDoFilho.address,
+          eventDate: dadosDoFilho.eventDate ? dadosDoFilho.eventDate.slice(0, 16) : '',
+          description: dadosDoFilho.description,
+          showAge: dadosDoFilho.showAge,
+          enableTimer: dadosDoFilho.enableTimer,
+          confirmEnable: dadosDoFilho.confirmEnable,
+          darkMode: dadosDoFilho.darkMode,
+          profileUrl: dadosDoFilho.profileUrl,
+          themeId: dadosDoFilho.themeId || dadosDoFilho.theme?.id
+        }, { emitEvent: false });
       }
     });
   }
 
-  save() {
-    const data = this.inviteForm.getRawValue() as InviteModel;
-    this.inviteService.saveInvite(data, this.profileFile).subscribe({
-      next: (result) => {
-        if (result) {
-          localStorage.setItem('tempId', result);
-          console.log(result);
-          this.router.navigate(['login']);
-        }
-      },
-      error: (err) => {
-        this.showMessage('Erro ao cadastrar convite, tente novamente mais tarde', 'fechar');
-      },
-    });
+  saveInvite() {
+    const rawValue = this.inviteForm.getRawValue();
+    const data = {
+      ...rawValue,
+      theme: rawValue.theme ?? undefined,
+    } as InviteModel;
+
+    this.saveInviteDraft(data);
+    this.router.navigate(['login']);
+  }
+
+  private saveInviteDraft(data: InviteModel) {
+    const draft = {
+      ...data,
+      profileUrl: data.profileUrl ?? null,
+      profileFileName: this.profileFile?.name ?? null,
+    };
+    sessionStorage.setItem('inviteDraft', JSON.stringify(draft));
   }
 
   addToListDescriptions(inputElement: HTMLInputElement) {
@@ -158,55 +167,41 @@ export class EditForm {
 
     if (control && valor.trim() !== '') {
       const listaAtual = control.value || [];
-
-      // Atualiza o FormControl com o novo array
       control.setValue([...listaAtual, valor.trim()]);
-
-      // Limpa o texto da caixa de entrada diretamente no DOM
       inputElement.value = '';
-
-      // Devolve o foco para o input para continuar digitando
       inputElement.focus();
     }
   }
 
   removeFromListDescriptions(index: number) {
     const control = this.inviteForm.get('description');
-
     if (control) {
       const currentList = control.value || [];
-
-      // Remove o item baseado na posição (index)
       const newList = currentList.filter((_: string, i: number) => i !== index);
-
-      // Atualiza o formulário com o novo array
       control.setValue(newList);
     }
   }
 
   imageCropped(event: ImageCroppedEvent) {
     this.croppedBlob = event.blob ?? null;
-    // Dá preferência para o base64 para evitar problemas de segurança do Angular
     this.croppedPreview = event.objectUrl ?? null;
   }
 
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
-    this.isEditingPhoto = true; // Abre o cropper assim que seleciona
+    this.isEditingPhoto = true;
   }
 
   savePhoto() {
     if (!this.croppedBlob || !this.croppedPreview) return;
 
-    // Mantém a criação do arquivo se você ainda precisar dele para enviar ao servidor depois
     const file = new File([this.croppedBlob], 'profile.jpg', {
       type: this.croppedBlob.type || 'image/jpeg',
     });
     this.profileFile = file;
 
-    // SALVE O BASE64
     this.inviteForm.patchValue({
-      profileUrl: this.croppedPreview, // Aqui vai a string da imagem pronta
+      profileUrl: this.croppedPreview,
     });
 
     this.isEditingPhoto = false;
@@ -218,22 +213,13 @@ export class EditForm {
   }
 
   removePhoto(event: Event) {
-    // Impede que o clique no botão de remover dispare o clique do círculo (input file)
     event.stopPropagation();
-
-    // 1. Limpa o valor no formulário
     this.profileFile = null;
-
-    //2. Remove link temporario
     this.inviteForm.patchValue({
       profileUrl: null,
     });
-
-    // 2. Reseta as pré-visualizações
     this.croppedPreview = null;
     this.imageChangedEvent = null;
-
-    // 3. Limpa o input file físico para permitir selecionar a mesma foto depois
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
@@ -243,14 +229,11 @@ export class EditForm {
     this.croppedPreview = null;
     this.isEditingPhoto = false;
     this.imageChangedEvent = null;
-
-    // O SEGREDO: Limpa o valor do input para permitir selecionar o mesmo arquivo
     if (this.fileInput) {
       this.fileInput.nativeElement.value = '';
     }
   }
 
-  // Validador Customizado para garantir que não seja no passado (Lógica)
   futureDateValidator(control: FormControl) {
     const selectedDate = new Date(control.value);
     const now = new Date();
@@ -261,17 +244,13 @@ export class EditForm {
     if (!dataUrl.includes('base64,')) {
       throw new Error('Imagem inválida: esperado dataURL em base64.');
     }
-
     const [header, base64] = dataUrl.split(',');
     const mime = header.match(/data:(.*?);base64/)?.[1] ?? 'image/jpeg';
-
     const binary = atob(base64);
     const bytes = new Uint8Array(binary.length);
-
     for (let i = 0; i < binary.length; i++) {
       bytes[i] = binary.charCodeAt(i);
     }
-
     return new File([bytes], filename, { type: mime });
   }
 
@@ -281,7 +260,7 @@ export class EditForm {
 
   showMessage(message: string, action: string) {
     this.snackBar.open(message, action, {
-      duration: 3000, // Closes after 3 seconds
+      duration: 3000,
       horizontalPosition: 'center',
       verticalPosition: 'bottom',
     });

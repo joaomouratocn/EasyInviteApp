@@ -14,7 +14,7 @@
           </div>
         }
 
-        <form class="space-y-4" [formGroup]="inviteForm" (ngSubmit)="save()">
+        <form class="space-y-4" [formGroup]="inviteForm" (ngSubmit)="saveInvite()">
           <div class="flex flex-col">
             <label class="text-sm font-semibold text-slate-600">Nome do Aniversariante:</label>
             <input
@@ -250,9 +250,14 @@
         </form>
       </div>
 
-      <!-- PREVIEW REAL -->
-      <div class="sticky top-6">
-        <app-invite-label [received]="invitePreview()" [previewMode]="true" />
+      <div class="layout-container">
+        <form [formGroup]="inviteForm"></form>
+
+        <app-invite-label
+          [received]="id()"
+          [mode]="mode()"
+          [(data)]="inviteShared"
+        ></app-invite-label>
       </div>
     </div>
   </main>

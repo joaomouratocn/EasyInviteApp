@@ -1,4 +1,4 @@
-@if (data.value(); as invite) {
+@if (data(); as invite) {
   <div
     [style.--bg]="schema()?.bg"
     [style.--text]="schema()?.text"
@@ -19,16 +19,13 @@
     <div
       class="w-full max-w-112.5 min-h-screen bg-(--card) shadow-2xl relative overflow-hidden border border-(--card-border) rounded-(--border-radius)"
     >
-      <!-- Cabeçalho com imagem de fundo do Tema -->
-      @if (theme.value(); as themeData) {
+      @if (invite.theme; as themeData) {
         <header
           class="h-72 flex items-center justify-center p-6 text-center font-bold italic relative overflow-hidden bg-cover bg-center bg-no-repeat"
           [style.backgroundImage]="imagesPage().profBgUrl"
         >
-          <!-- Escurece para dar contraste no texto -->
           <div class="absolute inset-0 bg-black/30"></div>
 
-          <!-- Fade para suavizar embaixo -->
           <div
             class="absolute bottom-0 left-0 w-full h-28 bg-linear-to-b from-transparent to-(--card)"
           ></div>
@@ -45,7 +42,6 @@
           </h1>
         </header>
 
-        <!-- Foto de Perfil -->
         @if (invite.profileUrl) {
           <div class="flex justify-center -mt-16 relative z-30">
             <img
@@ -57,7 +53,6 @@
         }
 
         <main class="p-8 text-center space-y-6">
-          <!-- Nome e Idade -->
           <section>
             <h2 class="text-4xl font-black uppercase text-(--text) italic tracking-tighter">
               {{ invite.name }}
@@ -67,12 +62,10 @@
             }
           </section>
 
-          <!-- Subtítulo -->
           @if (themeData.subTitle) {
             <p class="italic text-slate-500 font-medium">"{{ themeData.subTitle }}"</p>
           }
 
-          <!-- Dados do Evento -->
           <div
             class="grid gap-4 p-6 rounded-2xl border transition-all bg-(--info-bg) border-(--info-border)"
           >
@@ -106,7 +99,6 @@
             </div>
           </div>
 
-          <!-- Recadinhos -->
           @if (invite.description?.length) {
             <section class="text-left space-y-4 p-4 rounded-xl bg-(--info-bg)">
               <h3 class="text-xs font-black uppercase text-(--primary) tracking-widest">
@@ -123,13 +115,11 @@
             </section>
           }
 
-          <!-- Contador -->
           @if (invite.enableTimer) {
             <div
               class="grid grid-cols-3 gap-3 text-center py-4 border-y border-(--card-border)"
               aria-live="polite"
             >
-              <!-- Card: Dias -->
               <div
                 class="flex flex-col justify-center items-center py-3 px-2 rounded-2xl border border-(--card-border) bg-slate-900/10 backdrop-blur-sm"
               >
@@ -139,7 +129,6 @@
                 <span class="text-[11px] font-medium text-slate-400 mt-1">Dias</span>
               </div>
 
-              <!-- Card: Horas -->
               <div
                 class="flex flex-col justify-center items-center py-3 px-2 rounded-2xl border border-(--card-border) bg-slate-900/10 backdrop-blur-sm"
               >
@@ -149,7 +138,6 @@
                 <span class="text-[11px] font-medium text-slate-400 mt-1">Horas</span>
               </div>
 
-              <!-- Card: Minutos -->
               <div
                 class="flex flex-col justify-center items-center py-3 px-2 rounded-2xl border border-(--card-border) bg-slate-900/10 backdrop-blur-sm"
               >
@@ -161,7 +149,6 @@
             </div>
           }
 
-          <!-- Formulário de Presença -->
           @if (invite.confirmEnable) {
             <form #confirmForm="ngForm" (ngSubmit)="confirmPresence(confirmForm)">
               <div class="relative">
@@ -196,7 +183,6 @@
             </form>
           }
 
-          <!-- Modal de Confirmação -->
           @if (confirmModalOpen()) {
             <div
               class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm"
